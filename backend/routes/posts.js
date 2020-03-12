@@ -14,7 +14,8 @@ router.post('/addpost',  passport.authenticate('jwt', {session: false}), (req, r
         authorID: req.body.authorID,
         authorName: req.body.authorName,
         authorEmail: req.body.authorEmail,
-        authorTel: req.body.authorTel
+        authorTel: req.body.authorTel,
+        comments: req.body.comments
     });
 
     Post.addPost(newPost, (err, post) => {
@@ -25,6 +26,45 @@ router.post('/addpost',  passport.authenticate('jwt', {session: false}), (req, r
         }
     });
 });
+
+router.post('/blog/comment/:postid', (req, res, next) => {
+    let postID = req.params.postid;
+
+    let commentData = {
+        text: req.body.text,
+        date: req.body.date,
+        time: req.body.time,
+        author: req.body.author
+    };
+
+    Post.updateOne({ "_id": postID },{ "$push": { "comments": commentData } }, (err, comment) => {
+        if (err) {
+            res.json({success: false, msg:'Failed to comment post'});
+        } else {
+            res.json({success: true, msg:'Comment added'});
+        }
+    })
+
+})
+
+//add a comment
+/* router.post('/blog/comment/:id/:text/:date/:time/:author' , passport.authenticate('jwt', {session: false}), (req, res) => {
+    let postID = req.params.id;
+    let commentData = {
+        text: req.params.text.toString(),
+        date: req.params.date.toString(),
+        time: req.params.time.toString(),
+        author: req.params.author.toString()
+    }
+    Post.updateOne({ "_id": postID },{ "$push": { "comments": commentData } }, (err, comment) => {
+        if (!err) {
+            res.json(comment);
+        }
+        else {
+            res.json({success: false, msg:'Unauthorized'});
+        }
+    })
+}) */
 
 //get all posts
 router.get('/blog', passport.authenticate('jwt', {session: false}), (req, res) => {
@@ -49,9 +89,11 @@ router.get('/personal-blog/:userid', passport.authenticate('jwt', {session: fals
         }
         else {
             res.json({success: false, msg:'Unauthorized'});
-            next();
         }
     });
 });
+
+
+
 
 module.exports = router;
