@@ -27,7 +27,7 @@ router.post('/addpost',  passport.authenticate('jwt', {session: false}), (req, r
     });
 });
 
-router.post('/blog/comment/:postid', (req, res, next) => {
+router.post('/blog/comment/:postid',passport.authenticate('jwt', {session: false}), (req, res, next) => {
     let postID = req.params.postid;
 
     let commentData = {
