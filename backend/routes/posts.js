@@ -27,6 +27,7 @@ router.post('/addpost',  passport.authenticate('jwt', {session: false}), (req, r
     });
 });
 
+//comment a post
 router.post('/blog/comment/:postid',passport.authenticate('jwt', {session: false}), (req, res, next) => {
     let postID = req.params.postid;
 
@@ -47,24 +48,7 @@ router.post('/blog/comment/:postid',passport.authenticate('jwt', {session: false
 
 })
 
-//add a comment
-/* router.post('/blog/comment/:id/:text/:date/:time/:author' , passport.authenticate('jwt', {session: false}), (req, res) => {
-    let postID = req.params.id;
-    let commentData = {
-        text: req.params.text.toString(),
-        date: req.params.date.toString(),
-        time: req.params.time.toString(),
-        author: req.params.author.toString()
-    }
-    Post.updateOne({ "_id": postID },{ "$push": { "comments": commentData } }, (err, comment) => {
-        if (!err) {
-            res.json(comment);
-        }
-        else {
-            res.json({success: false, msg:'Unauthorized'});
-        }
-    })
-}) */
+
 
 //get all posts
 router.get('/blog', passport.authenticate('jwt', {session: false}), (req, res) => {
