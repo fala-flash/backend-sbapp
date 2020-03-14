@@ -5,6 +5,7 @@ const cors = require('cors');
 const passport = require('passport');
 const mongoose = require('mongoose');
 const config = require('./config/database');
+const morgan = require('morgan')
 
 
 //connect to database
@@ -23,6 +24,8 @@ mongoose.connection.on('error', (err) => {
 
 
 const app = express();
+
+app.use(morgan('tiny'));
 
 const users = require('./routes/users');
 const posts = require('./routes/posts');
