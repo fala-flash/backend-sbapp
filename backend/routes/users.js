@@ -7,21 +7,31 @@ const config = require('../config/database');
 
 // register
 router.post('/register', (req, res, next) => {
-    let newUser = new User({
-        name: req.body.name,
-        email: req.body.email,
-        tel: req.body.tel,
-        password: req.body.password,
-        role: req.body.role
-    });
 
-    User.addUser(newUser, (err, user) => {
-        if (err) {
-            res.json({success: false, msg:'Failed to register user'});
+    const email = req.body.email;
+    
+    User.getUserByEmail(email, (err, user) => {
+        if(err) throw error;
+        if (user) {
+            return res.json({success: false, msg:"L'utente esiste già"});
         } else {
-            res.json({success: true, msg:'User registered'});
+            let newUser = new User({
+                name: req.body.name,
+                email: req.body.email,
+                tel: req.body.tel,
+                password: req.body.password,
+                role: req.body.role
+            });
+        
+            User.addUser(newUser, (err, user) => {
+                if (err) {
+                    res.json({success: false, msg:"Errore durante la registrazione"});
+                } else {
+                    res.json({success: true, msg:"Utente registrato"});
+                }
+            });
         }
-    });
+    })
 });
 
 // authenticate
@@ -32,7 +42,7 @@ router.post('/authenticate', (req, res, next) => {
     User.getUserByEmail(email, (err, user) => {
         if(err) throw err;
         if (!user) {
-            return res.json({success: false, msg:'User not found'});
+            return res.json({success: false, msg:'Utente non trovato'});
         }
 
         User.comparePassword(password, user.password, (err, isMatch) => {
@@ -43,6 +53,7 @@ router.post('/authenticate', (req, res, next) => {
                });
                res.json({
                   success: true,
+                  msg: "Benvenuto",
                   token: 'JWT '+token,
                   user: {
                       id: user._id,
@@ -53,7 +64,7 @@ router.post('/authenticate', (req, res, next) => {
                   }
                });
            } else {
-            return res.json({success: false, msg:'Wrong password'});
+            return res.json({success: false, msg:'Password errata'});
            }
         });
     });

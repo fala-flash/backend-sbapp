@@ -20,9 +20,9 @@ router.post('/addpost',  passport.authenticate('jwt', {session: false}), (req, r
 
     Post.addPost(newPost, (err, post) => {
         if (err) {
-            res.json({success: false, msg:'Failed to add post'});
+            res.json({success: false, msg:"Errore durante l'invio della segnalazione"});
         } else {
-            res.json({success: true, msg:'Post added'});
+            res.json({success: true, msg:'Segnalazione inviata'});
         }
     });
 });
@@ -40,9 +40,9 @@ router.post('/blog/comment/:postid',passport.authenticate('jwt', {session: false
 
     Post.updateOne({ "_id": postID },{ "$push": { "comments": commentData } }, (err, comment) => {
         if (err) {
-            res.json({success: false, msg:'Failed to comment post'});
+            res.json({success: false, msg:"Errore durante l'invio del commento"});
         } else {
-            res.json({success: true, msg:'Comment added'});
+            res.json({success: true, msg:'Commento aggiunto'});
         }
     })
 
