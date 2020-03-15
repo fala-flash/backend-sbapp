@@ -35,7 +35,8 @@ router.post('/blog/comment/:postid',passport.authenticate('jwt', {session: false
         text: req.body.text,
         date: req.body.date,
         time: req.body.time,
-        author: req.body.author
+        author: req.body.author,
+        authorid: req.body.authorid
     };
 
     Post.updateOne({ "_id": postID },{ "$push": { "comments": commentData } }, (err, comment) => {
@@ -64,10 +65,12 @@ router.get('/blog', passport.authenticate('jwt', {session: false}), (req, res) =
 });
 
 
-//get all user posts
+
+
+//get all user posts and posts with his comment
 router.get('/personal-blog/:userid', passport.authenticate('jwt', {session: false}), (req, res) => {
     let userID = req.params.userid;
-    Post.find({"authorID": userID}, (err, posts) => {
+    Post.find({ $or:[ {"authorID": userID}, {"comments.authorid": userID} ]}, (err, posts) => {
         if (!err) {
             res.json(posts);
         }
