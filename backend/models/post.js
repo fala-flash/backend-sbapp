@@ -6,6 +6,10 @@ const PostSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    sentiment: {
+        type: String,
+        require: true
+    },
     date: {
         type: String,
         required: true
@@ -30,7 +34,7 @@ const PostSchema = mongoose.Schema({
         type: Number,
         required: true
     },
-    comments: [{ text: String, date: String, time: String, author: String, authorid: String }]
+    comments: [{ text: String, date: String, time: String, author: String, authorid: String, sentiment: String}]
 });
 
 

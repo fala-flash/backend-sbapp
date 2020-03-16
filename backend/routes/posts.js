@@ -4,11 +4,31 @@ const Post = require('../models/post');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const config = require('../config/database');
+const sentiment = require('multilang-sentiment');
+
+
+//sentiment analysis
+function analysis(text) {
+    let result;
+    let r = sentiment(text, 'it');
+    if (r.comparative >= 0) {
+        result = 'positivo/neutro';
+    } else {
+        result = 'negativo';
+    }
+
+    return result;
+}
+
+
+
+
 
 // add post
 router.post('/addpost',  passport.authenticate('jwt', {session: false}), (req, res, next) => {
     let newPost = new Post({
         text: req.body.text,
+        sentiment: analysis(req.body.text),  //sentiment analysis
         date: req.body.date,
         time: req.body.time,
         authorID: req.body.authorID,
@@ -33,6 +53,7 @@ router.post('/blog/comment/:postid',passport.authenticate('jwt', {session: false
 
     let commentData = {
         text: req.body.text,
+        sentiment: analysis(req.body.text),  //sentiment analysis
         date: req.body.date,
         time: req.body.time,
         author: req.body.author,
