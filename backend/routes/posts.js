@@ -11,16 +11,15 @@ const sentiment = require('multilang-sentiment');
 function analysis(text) {
     let result;
     let r = sentiment(text, 'it');
-    if (r.comparative >= 0) {
-        result = 'positivo/neutro';
+    if (r.comparative == 0) {
+        result = 'neutro';
+    } else if(r.comparative > 0) {
+        result = 'positivo';
     } else {
         result = 'negativo';
     }
-
     return result;
 }
-
-
 
 
 
@@ -46,6 +45,71 @@ router.post('/addpost',  passport.authenticate('jwt', {session: false}), (req, r
         }
     });
 });
+
+
+
+
+//delete a post
+router.delete('/delete/post/:postid', passport.authenticate('jwt', {session: false}), function(req, res) {
+
+    Post.getPostById(req.params.postid, (err, post) => {
+        if (err) {
+            throw err;
+        }
+
+        if (!post) {
+            return res.json({success: false, msg: `Post ${req.params.postid} non trovato`});
+        } else {
+            Post.findByIdAndRemove(req.params.postid, (err) => {
+                if (err) {
+                    return res.json({success: false, msg: 'ERROR 500'});
+                } else {
+                    return res.json({success: true, msg: `Post ${req.params.postid} eliminato`});
+                }
+            })
+        }
+    })
+})
+
+
+
+//delete a comment
+router.delete('/delete/comment/:postid/:commentid', passport.authenticate('jwt', {session: false}), function(req, res) {
+    let postID = req.params.postid;
+    let commentID = req.params.commentid;
+
+    Post.getPostById(postID, (err, post) => {
+        if (err) {
+            throw err;
+        }
+        if (!post) {
+            return res.json({success: false, msg: `Post ${postID} non trovato`});
+        }
+
+    Post.getCommentById(commentID, (err, comment) => {
+        if (err) {
+            throw err;
+        }
+
+        if (!comment) {
+            return res.json({success: false, msg: `Comment ${commentID} non trovato`});
+        }
+
+        if (comment) {
+            Post.updateOne({"_id": postID}, {"$pull": {comments: {"_id": commentID}}}, (err) => {
+                if (err) {
+                    res.json({success: false, msg:"Errore durante l'eliminazione del commento"});
+                } else {
+                    res.json({success: true, msg:'Commento eliminato'});
+                }
+            })
+        }
+    })
+    })
+})
+
+
+
 
 //comment a post
 router.post('/blog/comment/:postid',passport.authenticate('jwt', {session: false}), (req, res, next) => {
@@ -100,7 +164,6 @@ router.get('/personal-blog/:userid', passport.authenticate('jwt', {session: fals
         }
     });
 });
-
 
 
 

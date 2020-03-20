@@ -44,3 +44,12 @@ const Post = module.exports = mongoose.model('Post', PostSchema);
 module.exports.addPost = function(newPost, callback){
     newPost.save(callback());
 }
+
+module.exports.getPostById = function(id, callback){
+    Post.findById(id, callback);
+}
+
+module.exports.getCommentById = function(id, callback) {
+    const query = {"comments._id": id};
+    Post.findOne(query, callback);
+}

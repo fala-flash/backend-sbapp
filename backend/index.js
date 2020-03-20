@@ -9,7 +9,9 @@ const morgan = require('morgan')
 
 
 //connect to database
-mongoose.connect(process.env.mongoUrl || config.database, { useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(process.env.mongoUrl || config.database, { useNewUrlParser: true, 
+    useUnifiedTopology: true,
+    useFindAndModify: false});
 
 //on connection
 mongoose.connection.on('connected', () => {
