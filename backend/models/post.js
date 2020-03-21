@@ -34,7 +34,11 @@ const PostSchema = mongoose.Schema({
         type: Number,
         required: true
     },
-    comments: [{ text: String, date: String, time: String, author: String, authorid: String, sentiment: String}]
+    authorRole: {
+        type: String,
+        required: true
+    },
+    comments: [{ postId: String, text: String, date: String, time: String, author: String, authorid: String, sentiment: String}]
 });
 
 

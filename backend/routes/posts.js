@@ -34,6 +34,7 @@ router.post('/addpost',  passport.authenticate('jwt', {session: false}), (req, r
         authorName: req.body.authorName,
         authorEmail: req.body.authorEmail,
         authorTel: req.body.authorTel,
+        authorRole: req.body.authorRole,
         comments: req.body.comments
     });
 
@@ -116,6 +117,7 @@ router.post('/blog/comment/:postid',passport.authenticate('jwt', {session: false
     let postID = req.params.postid;
 
     let commentData = {
+        postId: req.body.postId,
         text: req.body.text,
         sentiment: analysis(req.body.text),  //sentiment analysis
         date: req.body.date,
