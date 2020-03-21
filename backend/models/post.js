@@ -38,7 +38,7 @@ const PostSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    comments: [{ postId: String, text: String, date: String, time: String, author: String, authorid: String, sentiment: String}]
+    comments: [{ postId: String, text: String, date: String, time: String, author: String, authorid: String, role: String, sentiment: String}]
 });
 
 

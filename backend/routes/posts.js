@@ -123,7 +123,8 @@ router.post('/blog/comment/:postid',passport.authenticate('jwt', {session: false
         date: req.body.date,
         time: req.body.time,
         author: req.body.author,
-        authorid: req.body.authorid
+        authorid: req.body.authorid,
+        role: req.body.role
     };
 
     Post.updateOne({ "_id": postID },{ "$push": { "comments": commentData } }, (err, comment) => {
