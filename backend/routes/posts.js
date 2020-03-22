@@ -65,7 +65,7 @@ router.delete('/delete/post/:postid', passport.authenticate('jwt', {session: fal
                 if (err) {
                     return res.json({success: false, msg: 'ERROR 500'});
                 } else {
-                    return res.json({success: true, msg: `Post ${req.params.postid} eliminato`});
+                    return res.json({success: true, msg: `Post eliminato`});
                 }
             })
         }
